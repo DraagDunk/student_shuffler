@@ -1,5 +1,6 @@
 import tkinter as tk
 from tkinter import ttk
+from tkinter import filedialog
 from random import shuffle
 from random import random
 
@@ -108,7 +109,12 @@ class InputFrame(ttk.Frame):
         self.student_list = []
 
         # Import data and but it into a list.
-        path = "default_list.txt"
+        path = filedialog.askopenfilename(
+            initialdir=".",
+            title="Vælg liste over elever",
+            filetypes=(("Text files", "*.txt*"),)
+        )
+
         file = open(path, "r")
         student_list = file.read().split("\n")
 
