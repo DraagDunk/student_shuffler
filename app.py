@@ -4,14 +4,21 @@ from random import shuffle
 from random import random
 
 
-def tup_split(string: str) -> tuple:
-    lst = string.split(";")
+def tup_split(string: str, delimiter: str = ";") -> tuple:
+    lst = string.split(delimiter)
     return (lst[0], lst[1])
 
 
 def divide_groups(lst: list, num_g: int, num_s: int) -> dict:
     grp_dict = {}
-    num_groups = num_g if num_g else len(lst)//num_s
+    if num_g:
+        num_groups = num_g
+    elif num_s:
+        num_groups = len(lst)//num_s
+    else:
+        print("No number of groups or number of students per group provided, defaulting to 1 group.")
+        num_groups = 1
+
     for i, name in enumerate(lst):
         grp_num = i % num_groups
         if str(grp_num+1) in grp_dict.keys():
@@ -23,8 +30,9 @@ def divide_groups(lst: list, num_g: int, num_s: int) -> dict:
 
 def increment_rows(curr_row, curr_col, max_rows=20):
     new_row = curr_row + 1
-    if new_row > 20:
+    if new_row > max_rows:
         new_col = curr_col + 1
+        new_row = 0
     else:
         new_col = curr_col
     return new_row, new_col
@@ -38,6 +46,10 @@ class MainWindow(tk.Tk):
         self.title("Elevblender")
 
         self.out_frame = OutputFrame(self)
+
+        back_button = ttk.Button(
+            self.out_frame, text="<< Tilbage", command=self.return_to_input)
+        back_button.grid(row=2, column=0, sticky="EW")
 
         self.in_frame = InputFrame(self)
         self.in_frame.grid(row=0, column=0)
@@ -53,6 +65,11 @@ class MainWindow(tk.Tk):
         self.out_frame.grid(row=0, column=0)
         self.in_frame.grid_forget()
 
+    def return_to_input(self):
+        """Returns to the input frame."""
+        self.in_frame.grid(row=0, column=0)
+        self.out_frame.grid_forget()
+
 
 class InputFrame(ttk.Frame):
 
@@ -60,11 +77,7 @@ class InputFrame(ttk.Frame):
         super().__init__(container, **kwargs)
 
         # Defining variables
-        self.student_list = ["Lars;mand", "Frank;mand",
-                             "Kasper;mand", "Mads;mand",
-                             "Lone;kvinde", "Jesper;mand",
-                             "Klara;kvinde", "Frede;mand",
-                             "Frederikke;kvinde"]
+        self.student_list = []
         self.student_list_var = tk.StringVar(value=self.student_list)
         self.groups = {}
 
@@ -90,17 +103,40 @@ class InputFrame(ttk.Frame):
         add_student_button.grid(row=3, column=1, columnspan=2)
 
     def load_students(self, *args):
-        pass
+        """Load a text file into the student list."""
 
-    def add_student(self, *args):
+        self.student_list = []
+
+        # Import data and but it into a list.
+        path = "default_list.txt"
+        file = open(path, "r")
+        student_list = file.read().split("\n")
+
+        # Clean the list up a bit.
+        for i, student in enumerate(student_list):
+            if student == "":
+                _ = student_list.pop(i)
+
+        # Register the students to the list.
+        for student in student_list:
+            student.replace(",", ";")
+            self.add_student(student=student)
+
+    def add_student(self, *args, **kwargs):
         """Add new student with data from the add_new_student_frame."""
-        new_student_string = f"{self.add_new_student_frame.new_student_var.get()};" +\
-            f"{self.add_new_student_frame.student_gender_entry.gender_var.get()}"
+        if "student" in kwargs.keys():
+            new_student_string = kwargs["student"]
+        else:
+            new_student_string = f"{self.add_new_student_frame.new_student_var.get()};" +\
+                f"{self.add_new_student_frame.student_gender_entry.gender_var.get()}"
         self.student_list.append(new_student_string)
         self.student_list_var.set(value=self.student_list)
 
     def create_groups(self, *args):
         """Create groups and save them in the groups variable."""
+        # Clear existing groups
+        self.groups = {}
+
         temp_student_list = [student for student in self.student_list]
         shuffle(temp_student_list)
         if bool(self.create_groups_frame.divide_gender_var.get()):
@@ -237,18 +273,48 @@ class OutputFrame(ttk.Frame):
         self.title_label = ttk.Label(self, text="Grupper")
         self.title_label.grid(row=0, column=0)
 
+        self.groups_frame = GroupsFrame(
+            self, borderwidth=2, relief="groove", padding=10)
+        self.groups_frame.grid(row=1, column=0, sticky="NSEW")
+
     def display_groups(self, groups):
-        curr_row = 0
+
+        for widget in self.groups_frame.winfo_children():
+            widget.destroy()
+
+        curr_row = -1
         curr_col = 0
         for group_num in groups.keys():
-            group_num_label = ttk.Label(self, text=f"Gruppe {group_num}")
             curr_row, curr_col = increment_rows(
-                curr_row, curr_col, max_rows=20)
-            group_num_label.grid(row=curr_row, column=curr_col, sticky="W")
-            for name in groups[group_num]:
-                name_label = ttk.Label(self, text=f" - {name}")
-                curr_row += 1
-                name_label.grid(row=curr_row, column=curr_col, sticky="W")
+                curr_row, curr_col, max_rows=4)
+            y_padding = (5, 0) if curr_row != 0 else 0
+            group_frame = GroupFrame(
+                self.groups_frame, grp_num=group_num, group=groups[group_num])
+            group_frame.grid(row=curr_row, column=curr_col,
+                             pady=y_padding, sticky="NW")
+
+
+class GroupsFrame(ttk.Frame):
+    pass
+
+
+class GroupFrame(ttk.Frame):
+
+    def __init__(self, container, grp_num: str = "", group: list = [], *args, **kwargs):
+        super().__init__(container, *args, **kwargs)
+
+        self.configure(padding=10)
+
+        group_num_label = ttk.Label(
+            self, text=f"Gruppe {grp_num}")
+        group_num_label.grid(
+            row=0, column=0, sticky="W")
+        curr_row = 0
+        for student in group:
+            name_label = ttk.Label(self, text=f" - {student}")
+            curr_row += 1
+            name_label.grid(row=curr_row, column=0,
+                            sticky="W")
 
 
 root = MainWindow()
