@@ -16,8 +16,8 @@ This app is meant to help teachers shuffle the students in their classes into gr
  
  ## TODO
 
- * Save groups to .txt file.
-
  * Package app as executable file.
 
  * Implement limits to the size of groups based in number of students.
+
+ * Remove student from list
