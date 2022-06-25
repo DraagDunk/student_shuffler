@@ -1,9 +1,9 @@
 import tkinter as tk
-from tkinter import ttk, filedialog
+from tkinter import END, VERTICAL, ttk, filedialog
 
 from random import random, shuffle
 
-from utils import tup_split, student_list_to_str, divide_groups
+from utils import tup_split, student_list_to_str, divide_groups, remove_indices
 
 
 class InputFrame(ttk.Frame):
@@ -23,31 +23,44 @@ class InputFrame(ttk.Frame):
         self.list_frame = ttk.Frame(self)
         self.list_frame.rowconfigure(0, weight=1)
         self.list_frame.rowconfigure(1, weight=0)
+        self.list_frame.columnconfigure(0, weight=1)
+        self.list_frame.columnconfigure(1, weight=1)
+        self.list_frame.columnconfigure(2, weight=0)
 
         # Create widgets
-        student_list = tk.Listbox(
-            self.list_frame, height=20, width=30, listvariable=self.student_list_var)
-        load_button = ttk.Button(
-            self.list_frame, text="Indlæs liste", command=self.load_students)
-        save_button = ttk.Button(
-            self.list_frame, text="Gem liste", command=self.save_students)
         self.add_new_student_frame = AddNewStudentFrame(
             self, borderwidth=2, relief="groove")
         self.create_groups_frame = CreateGroupsFrame(
             self, borderwidth=2, relief="groove")
 
+        self.student_listbox = tk.Listbox(
+            self.list_frame, height=20, width=40, listvariable=self.student_list_var, selectmode="extended")
+        student_list_scrollbar = tk.Scrollbar(self.list_frame, orient=VERTICAL)
+        self.student_listbox.configure(
+            yscrollcommand=student_list_scrollbar.set)
+        student_list_scrollbar.config(command=self.student_listbox.yview)
+        load_button = ttk.Button(
+            self.list_frame, text="Indlæs liste", command=self.load_students)
+        save_button = ttk.Button(
+            self.list_frame, text="Gem liste", command=self.save_students)
+
         add_student_button = ttk.Button(
             self.add_new_student_frame, text="Tilføj elev", command=self.add_student)
+        rem_student_button = ttk.Button(
+            self.add_new_student_frame, text="Fjern elev", command=self.remove_student)
 
         # Assign widgets to grid
         self.list_frame.grid(row=0, column=0, rowspan=2)
-        student_list.grid(row=0, column=0, columnspan=2)
+        self.student_listbox.grid(row=0, column=0, columnspan=2)
+        student_list_scrollbar.grid(row=0, column=2, sticky="NS")
         load_button.grid(row=1, column=0, sticky="EW")
         save_button.grid(row=1, column=1, sticky="EW")
+
         self.add_new_student_frame.grid(row=0, column=1, sticky="NSEW")
         self.create_groups_frame.grid(row=1, column=1, sticky="NSEW")
 
-        add_student_button.grid(row=2, column=0, columnspan=2, sticky="NSEW")
+        add_student_button.grid(row=2, column=1, sticky="NSEW")
+        rem_student_button.grid(row=2, column=0, sticky="NSEW")
 
     def load_students(self, *args):
         """Load a text file into the student list."""
@@ -66,7 +79,7 @@ class InputFrame(ttk.Frame):
             student_list = file.read().split("\n")
 
             # Clean the list up a bit.
-            for i, student in enumerate(student_list):
+            for i, student in sorted(enumerate(student_list), reverse=True):
                 if student == "":
                     _ = student_list.pop(i)
 
@@ -110,6 +123,18 @@ class InputFrame(ttk.Frame):
         self.student_list.append(new_student_tup)
         student_name_list = [tup[0] for tup in self.student_list]
         self.student_list_var.set(value=student_name_list)
+        self.student_listbox.selection_clear(0, END)
+        self.student_listbox.selection_set(END, END)
+        self.student_listbox.yview_moveto(1)
+
+    def remove_student(self, *args, **kwargs):
+        """Remove the chosen student from the student list."""
+        chosen_student_ind = list(self.student_listbox.curselection())
+        self.student_list = remove_indices(
+            self.student_list, chosen_student_ind)
+        self.student_list_var.set([student[0]
+                                  for student in self.student_list])
+        self.student_listbox.selection_clear(0, END)
 
     def create_groups(self, *args):
         """Create groups and save them in the groups variable."""

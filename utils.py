@@ -60,3 +60,10 @@ def increment(curr_row, curr_col, max=5, mode="col"):
         return inc2, inc1
     else:
         return inc1, inc2
+
+
+def remove_indices(lst: list, ind: list) -> list:
+    rev_ind = sorted(ind, reverse=True)
+    for i in rev_ind:
+        lst.pop(i)
+    return lst
