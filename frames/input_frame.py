@@ -3,7 +3,7 @@ from tkinter import END, VERTICAL, ttk, filedialog
 
 from random import random, shuffle
 
-from utils import tup_split, student_list_to_str, divide_groups, remove_indices
+from frames.utils import tup_split, student_list_to_str, divide_groups, remove_indices
 
 
 class InputFrame(ttk.Frame):
@@ -88,7 +88,7 @@ class InputFrame(ttk.Frame):
                 student.replace(",", ";")
                 self.add_student(student=student)
         else:
-            print("No filename provided, cancelling.")
+            # print("No filename provided, cancelling.")
             return
 
     def save_students(self, *args, **kwargs):
@@ -106,7 +106,7 @@ class InputFrame(ttk.Frame):
             file.write(save_string)
             file.close()
         else:
-            print("No filename provided, cancelling.")
+            # print("No filename provided, cancelling.")
             return
 
     def add_student(self, *args, **kwargs):
@@ -163,8 +163,6 @@ class InputFrame(ttk.Frame):
                 else:
                     female_list.append(other_name)
 
-            print(male_list)
-            print(female_list)
             m_ratio = len(male_list)/(len(male_list)+len(female_list))
             f_ratio = len(female_list)/(len(male_list)+len(female_list))
             male_groups = divide_groups(

@@ -1,7 +1,7 @@
 import tkinter as tk
 from tkinter import ttk, filedialog
 
-from utils import increment, group_dir_to_str
+from frames.utils import increment, group_dir_to_str
 
 
 class OutputFrame(ttk.Frame):
@@ -56,7 +56,7 @@ class OutputFrame(ttk.Frame):
             file.write(save_string)
             file.close()
         else:
-            print("No filename provided, cancelling.")
+            # print("No filename provided, cancelling.")
             return
 
 

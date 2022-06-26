@@ -6,18 +6,20 @@ This app is meant to help teachers shuffle the students in their classes into gr
 
 * Shuffle a list of students into groups.
 
+* Save list of groups to a .txt file.
+
 * Import a .txt file containing a list of students.
+
+* Save list of students to a .txt file.
 
 * Divide groups by gender.
 
-* Add students to the list from the app.
+* Add students to the list in the app.
+
+* Remove students from the list in the app.
 
 * Set number of groups or number of students in each group.
  
  ## TODO
 
- * Package app as executable file.
-
  * Implement limits to the size of groups based in number of students.
-
- * Remove student from list
