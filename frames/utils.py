@@ -27,7 +27,7 @@ def divide_groups(lst: list, num_g: int, num_s: int) -> dict:
     elif num_s:
         num_groups = len(lst)//num_s
     else:
-        print("No number of groups or number of students per group provided, defaulting to 1 group.")
+        # print("No number of groups or number of students per group provided, defaulting to 1 group.")
         num_groups = 1
 
     for i, name in enumerate(lst):

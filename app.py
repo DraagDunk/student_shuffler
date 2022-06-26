@@ -1,8 +1,8 @@
 import tkinter as tk
 from tkinter import ttk
 
-from input_frame import InputFrame
-from output_frame import OutputFrame
+from frames import InputFrame
+from frames import OutputFrame
 
 
 class MainWindow(tk.Tk):
