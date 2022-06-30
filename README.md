@@ -32,3 +32,5 @@ This app is meant to help teachers shuffle the students in their classes into gr
  * Implement limits to the size of groups based in number of students.
 
  * Remove redundant tup_split-function.
+
+ * Bind <Tab> to switching between marked gender in the input frame.
