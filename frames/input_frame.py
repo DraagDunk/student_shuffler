@@ -111,21 +111,32 @@ class InputFrame(ttk.Frame):
 
     def add_student(self, *args, **kwargs):
         """Add new student with data from the add_new_student_frame."""
+
+        # Add a student given by the "create_groups"-method.
         if "student" in kwargs.keys():
             new_student_string = kwargs["student"]
             new_student_tup = tup_split(new_student_string)
             new_student_name = new_student_tup[0]
             new_student_gender = new_student_tup[1]
+
+        # Add a student from the "new_student_var"-field.
         else:
             new_student_name = self.add_new_student_frame.new_student_var.get()
             new_student_gender = self.add_new_student_frame.student_gender_entry.gender_var.get()
             new_student_tup = (new_student_name, new_student_gender)
+
+        # Add the student to the various containers.
         self.student_list.append(new_student_tup)
         student_name_list = [tup[0] for tup in self.student_list]
         self.student_list_var.set(value=student_name_list)
+
+        # Set the selection to the new student, and scroll list to the bottom.
         self.student_listbox.selection_clear(0, END)
         self.student_listbox.selection_set(END, END)
         self.student_listbox.yview_moveto(1)
+
+        # Clear the variable.
+        self.add_new_student_frame.new_student_var.set("")
 
     def remove_student(self, *args, **kwargs):
         """Remove the chosen student from the student list."""
