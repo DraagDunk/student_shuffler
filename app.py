@@ -50,4 +50,18 @@ class MainWindow(tk.Tk):
 
 root = MainWindow()
 
+# Keybind functions
+
+
+def handle_return(event):
+    focus_is_add_new = root.focus_get(
+    ) == root.in_frame.add_new_student_frame.student_name_entry
+
+    if focus_is_add_new:
+        root.in_frame.add_student()
+
+
+# Define keybinds
+root.bind("<Return>", handle_return)
+
 root.mainloop()
