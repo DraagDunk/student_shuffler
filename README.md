@@ -1,6 +1,13 @@
 # Student shuffler
 
-This app is meant to help teachers shuffle the students in their classes into groups of a predetermined size or number. The app can take a .txt file of a certain format, and import each student from that list into its internal logic.
+This app is meant to help teachers shuffle the students in their classes into groups of a predetermined size or number. The app can take a .txt file of a certain format, and import each student from that list into its internal logic. Lists of students and lists of the groups created by the software can both be saved to a .txt file format.
+
+## General information
+
+**Author:** Jesper Dam Knudgaard
+**GitHub:** https://github.com/DraagDunk/student_shuffler
+**Source Language:** Python
+**Created:** June 16th, 2022
 
 ## Basic functionality
 
