@@ -135,8 +135,9 @@ class InputFrame(ttk.Frame):
         self.student_listbox.selection_set(END, END)
         self.student_listbox.yview_moveto(1)
 
-        # Clear the variable.
+        # Clear the variable and focus on the field again.
         self.add_new_student_frame.new_student_var.set("")
+        self.add_new_student_frame.student_name_entry.focus()
 
     def remove_student(self, *args, **kwargs):
         """Remove the chosen student from the student list."""
@@ -218,13 +219,13 @@ class AddNewStudentFrame(ttk.Frame):
         # Creating widgets
         student_name_label = ttk.Label(
             self, text="Navn på ny elev:")
-        student_name_entry = ttk.Entry(
+        self.student_name_entry = ttk.Entry(
             self, textvariable=self.new_student_var)
         self.student_gender_entry = StudentGenderSelection(self)
 
         # Assigning widgets to grid
         student_name_label.grid(row=0, column=0, padx=(0, 5))
-        student_name_entry.grid(row=0, column=1)
+        self.student_name_entry.grid(row=0, column=1)
         self.student_gender_entry.grid(row=1, column=0, columnspan=2)
 
 

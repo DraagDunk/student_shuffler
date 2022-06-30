@@ -31,8 +31,6 @@ This app is meant to help teachers shuffle the students in their classes into gr
 
  * Implement limits to the size of groups based in number of students.
 
- * Remove text in add_student field when student is added.
-
  * When new student is added, return focus to field.
 
  * When new student field is focused, bind <<enter>> to add-button.
