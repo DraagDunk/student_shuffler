@@ -1,7 +1,3 @@
-def tup_split(string: str, delimiter: str = ";") -> tuple:
-    lst = string.split(delimiter)
-    return (lst[0], lst[1])
-
 
 def student_list_to_str(student_list: list[tuple]) -> str:
     student_string = ""

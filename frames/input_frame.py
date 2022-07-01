@@ -3,7 +3,7 @@ from tkinter import END, VERTICAL, ttk, filedialog
 
 from random import random, shuffle
 
-from frames.utils import tup_split, student_list_to_str, divide_groups, remove_indices
+from frames.utils import student_list_to_str, divide_groups, remove_indices
 
 
 class InputFrame(ttk.Frame):
@@ -115,7 +115,7 @@ class InputFrame(ttk.Frame):
         # Add a student given by the "create_groups"-method.
         if "student" in kwargs.keys():
             new_student_string = kwargs["student"]
-            new_student_tup = tup_split(new_student_string)
+            new_student_tup = new_student_string.split(";")
             new_student_name = new_student_tup[0]
             new_student_gender = new_student_tup[1]
 
