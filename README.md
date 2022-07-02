@@ -31,6 +31,4 @@ This app is meant to help teachers shuffle the students in their classes into gr
 
  * Implement limits to the size of groups based in number of students.
 
- * Bind <Tab> to switching between marked gender in the input frame.
-
  * Use tkraise function for changing between frames instead

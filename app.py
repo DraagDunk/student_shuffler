@@ -54,6 +54,7 @@ root = MainWindow()
 
 
 def handle_return(event):
+    """Adds new student when return is pressed."""
     focus_is_add_new = root.focus_get(
     ) == root.in_frame.add_new_student_frame.student_name_entry
 
@@ -61,7 +62,26 @@ def handle_return(event):
         root.in_frame.add_student()
 
 
+def handle_tab(event):
+    """Rotates selected gender when tab is pressed."""
+    focus_is_add_new = root.focus_get(
+    ) == root.in_frame.add_new_student_frame.student_name_entry
+
+    if focus_is_add_new:
+        curr_val = root.in_frame.add_new_student_frame.student_gender_entry.gender_var.get()
+        choices = ["mand", "kvinde", "andet"]
+        choice_index = [i for i in range(
+            len(choices)) if choices[i] == curr_val][0]
+        new_index = (choice_index + 1) % len(choices)
+        root.in_frame.add_new_student_frame.student_gender_entry.gender_var.set(
+            choices[new_index])
+        root.in_frame.add_new_student_frame.student_name_entry.focus_set()
+
+
 # Define keybinds
 root.bind("<Return>", handle_return)
+
+root.unbind_all("<<NextWindow>>")
+root.bind("<Tab>", handle_tab)
 
 root.mainloop()
