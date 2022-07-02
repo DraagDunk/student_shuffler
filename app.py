@@ -16,7 +16,7 @@ class MainWindow(tk.Tk):
 
         back_button = ttk.Button(
             self.out_frame,
-            text="<< Tilbage",
+            text="← Tilbage",
             command=self.return_to_input
         )
         back_button.grid(row=2, column=0, sticky="EW")
