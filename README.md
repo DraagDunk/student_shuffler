@@ -5,8 +5,11 @@ This app is meant to help teachers shuffle the students in their classes into gr
 ## General information
 
 **Author:** Jesper Dam Knudgaard
+
 **GitHub:** https://github.com/DraagDunk/student_shuffler
+
 **Source Language:** Python
+
 **Created:** June 16th, 2022
 
 ## Basic functionality
