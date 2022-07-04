@@ -21,7 +21,7 @@ class OutputFrame(ttk.Frame):
             self, borderwidth=2, relief="groove", padding=10)
 
         # Assigning widgets and frames to grid
-        self.title_label.grid(row=0, column=0, columnspan=2)
+        self.title_label.grid(row=0, column=0, columnspan=2, sticky="EW")
         self.groups_frame.grid(row=1, column=0, columnspan=2, sticky="NSEW")
         self.save_button.grid(row=2, column=1, sticky="EW")
 

@@ -13,6 +13,7 @@ class MainWindow(tk.Tk):
         self.title("Elevblender")
 
         self.out_frame = OutputFrame(self)
+        self.out_frame.grid(row=0, column=0, sticky="NSEW")
 
         back_button = ttk.Button(
             self.out_frame,
@@ -39,13 +40,15 @@ class MainWindow(tk.Tk):
 
     def go_to_output(self):
         """Go to the output frame."""
-        self.out_frame.grid(row=0, column=0)
-        self.in_frame.grid_forget()
+        self.out_frame.tkraise()
+        # self.out_frame.grid(row=0, column=0)
+        # self.in_frame.grid_forget()
 
     def return_to_input(self):
         """Returns to the input frame."""
-        self.in_frame.grid(row=0, column=0)
-        self.out_frame.grid_forget()
+        self.in_frame.tkraise()
+        # self.in_frame.grid(row=0, column=0)
+        # self.out_frame.grid_forget()
 
 
 root = MainWindow()
