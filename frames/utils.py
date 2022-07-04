@@ -1,4 +1,8 @@
 
+male_strings = ("mand", "m", "male", "dreng")
+female_strings = ("kvinde", "k", "female", "f", "pige")
+
+
 def student_list_to_str(student_list: list[tuple]) -> str:
     student_string = ""
     for student_tup in student_list:
@@ -63,3 +67,7 @@ def remove_indices(lst: list, ind: list) -> list:
     for i in rev_ind:
         lst.pop(i)
     return lst
+
+
+def student_gender_symbol(gender):
+    return "♂" if gender in male_strings else "♀" if gender in female_strings else "⚥"
