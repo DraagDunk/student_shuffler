@@ -125,6 +125,13 @@ class InputFrame(ttk.Frame):
             new_student_gender = self.add_new_student_frame.student_gender_entry.gender_var.get()
             new_student_tup = (new_student_name, new_student_gender)
 
+        # Throw away student if no name was provided.
+        if not new_student_name or not new_student_gender:
+            print(
+                f"No student name and/or gender provided for {new_student_name or 'none'}"
+                f" ({new_student_gender or 'none'}), skipping.")
+            return
+
         # Add the student to the various containers.
         self.student_list.append(new_student_tup)
         student_name_list = [tup[0] for tup in self.student_list]
