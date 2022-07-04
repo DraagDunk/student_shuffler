@@ -36,4 +36,3 @@ This app is meant to help teachers shuffle the students in their classes into gr
 
  * Use tkraise function for changing between frames instead.
 
- * Indicate gender of student in list.

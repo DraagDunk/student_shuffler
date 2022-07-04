@@ -3,7 +3,9 @@ from tkinter import END, VERTICAL, ttk, filedialog
 
 from random import random, shuffle
 
-from frames.utils import student_list_to_str, divide_groups, remove_indices
+from frames.utils import student_list_to_str, divide_groups, \
+    remove_indices, student_gender_symbol, \
+    male_strings, female_strings
 
 
 class InputFrame(ttk.Frame):
@@ -134,7 +136,8 @@ class InputFrame(ttk.Frame):
 
         # Add the student to the various containers.
         self.student_list.append(new_student_tup)
-        student_name_list = [tup[0] for tup in self.student_list]
+        student_name_list = [
+            f"{tup[0]} {student_gender_symbol(tup[1])}" for tup in self.student_list]
         self.student_list_var.set(value=student_name_list)
 
         # Set the selection to the new student, and scroll list to the bottom.
@@ -168,9 +171,9 @@ class InputFrame(ttk.Frame):
             other_list = []
             for student in temp_student_list:
                 name, gender = student
-                if gender in ("mand", "m", "male", "dreng"):
+                if gender in male_strings:
                     male_list.append(name)
-                elif gender in ("kvinde", "k", "female", "f", "pige"):
+                elif gender in female_strings:
                     female_list.append(name)
                 else:
                     other_list.append(name)
