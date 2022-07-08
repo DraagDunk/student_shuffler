@@ -37,7 +37,7 @@ jobs:
         working-directory: app
 
       - name: Build with pyinstaller
-        run: pyinstaller -w --onefile --name=elevblender-${{ matrix.os }} main.py
+        run: pyinstaller -w --onefile --name=elevblender-${{ matrix.os }} app.py
         working-directory: app
 
       - name: Deploy artifacts
