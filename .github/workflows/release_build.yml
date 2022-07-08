@@ -7,7 +7,7 @@ on:
 defaults:
   run:
     shell: bash
-    working-directory: student_shuffler
+    working-directory: app
 
 jobs:
   Build:
@@ -44,5 +44,5 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: app-${{ matrix.os }}
-          path: student_shuffler/dist/elevblender-${{ matrix.os }}*
+          path: dist/elevblender-${{ matrix.os }}*
           if-no-files-found: error
