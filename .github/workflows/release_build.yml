@@ -1,7 +1,8 @@
 name: Build
 
 on:
-  release: [published]
+  release: 
+    [published]
 
 defaults:
   run:
