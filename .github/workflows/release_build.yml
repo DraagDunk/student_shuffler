@@ -34,9 +34,11 @@ jobs:
       - name: Install Python dependencies
         run: |
           python -m pip install --upgrade pip pyinstaller
+        - working-directory: app
 
       - name: Build with pyinstaller
         run: pyinstaller -w --onefile --name=elevblender-${{ matrix.os }} main.py
+        - working-directory: app
 
       - name: Deploy artifacts
         uses: actions/upload-artifact@v2
