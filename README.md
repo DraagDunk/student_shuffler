@@ -12,6 +12,14 @@ This app is meant to help teachers shuffle the students in their classes into gr
 
 **Created:** June 16th, 2022
 
+## Install
+
+Install the latest version in executable form [here](https://github.com/DraagDunk/student_shuffler/releases/latest).
+
+You only need the executable for your operating system.
+
+Currently, your virus detection software will probably react pretty severely to this software. This will be fixed as soon as I figure out how.
+
 ## Basic functionality
 
 * Shuffle a list of students into groups.
