@@ -54,7 +54,7 @@ jobs:
     if: startsWith(github.ref, 'refs/tags/')
     permissions:
       actions: read
-    uses: yogeshlonkar/wait-for-jobs@v0
+    uses: yogeshlonkar/wait-for-jobs@v0.1.4
     with:
       gh-token: ${{ secrets.GITHUB_TOKEN }}
       ignore-skipped: 'false'
