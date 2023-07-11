@@ -21,13 +21,13 @@ jobs:
       matrix:
         include:
           - os: macos-latest
-            artifact-name: elevblender
+            artifact-name: elevblender-macos
             asset-name: elevblender-macos-${{ github.ref }}
           - os: ubuntu-latest
-            artifact-name: elevblender
+            artifact-name: elevblender-ubuntu
             asset-name: elevblender-ubuntu-${{ github.ref }}
           - os: windows-latest
-            artifact-name: elevblender.exe
+            artifact-name: elevblender-windows.exe
             asset-name: elevblender-windows-${{ github.ref }}
 
     runs-on: ${{ matrix.os }}
@@ -47,13 +47,13 @@ jobs:
         working-directory: app
 
       - name: Build with pyinstaller
-        run: pyinstaller -w -y --onefile --name=${{ matrix.artifact_name }} app.py
+        run: pyinstaller -w -y --onefile --name=${{ matrix.artifact-name }} app.py
         working-directory: app
 
       - name: Upload binaries to release
         uses: svenstaro/upload-release-action@v2
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
-          file: app/dist/${{ matrix.artifact_name }}
-          asset_name: ${{ matrix.asset_name }}
+          file: app/dist/${{ matrix.artifact-name }}
+          asset_name: ${{ matrix.asset-name }}
           tag: ${{ github.ref }}
