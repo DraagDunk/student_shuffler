@@ -21,14 +21,11 @@ jobs:
       matrix:
         include:
           - os: macos-latest
-            artifact-name: elevblender-macos
-            asset-name: elevblender-macos-${{ github.ref_name }}
+            artifact-name: elevblender-macos-${{ github.ref_name }}
           - os: ubuntu-latest
-            artifact-name: elevblender-ubuntu
-            asset-name: elevblender-ubuntu-${{ github.ref_name }}
+            artifact-name: elevblender-ubuntu-${{ github.ref_name }}
           - os: windows-latest
-            artifact-name: elevblender-windows
-            asset-name: elevblender-windows-${{ github.ref_name }}
+            artifact-name: elevblender-windows-${{ github.ref_name }}
 
     runs-on: ${{ matrix.os }}
 
@@ -57,3 +54,4 @@ jobs:
           file: app/dist/${{ matrix.artifact-name }}*
           asset_name: ${{ matrix.asset-name }}
           tag: ${{ github.ref }}
+          file_glob: true
