@@ -1,6 +1,9 @@
 name: Build
 
-on: push
+on: 
+  push:
+    tags:
+      - '*'
 
 defaults:
   run:
@@ -9,15 +12,20 @@ defaults:
 jobs:
   Build:
     name: Build release binaries
-    if: startsWith(github.ref, 'refs/tags/')
 
     strategy:
       fail-fast: false
       matrix:
-        os:
-          - macos-latest
-          - ubuntu-latest
-          - windows-latest
+        include:
+          - os: macos-latest
+            artifact-name: elevblender
+            asset-name: elevblender-macos-${{ github.ref }}
+          - os: ubuntu-latest
+            artifact-name: elevblender
+            asset-name: elevblender-ubuntu-${{ github.ref }}
+          - os: windows-latest
+            artifact-name: elevblender.exe
+            asset-name: elevblender-windows-${{ github.ref }}
 
     runs-on: ${{ matrix.os }}
 
@@ -28,7 +36,7 @@ jobs:
       - name: Setup Python
         uses: actions/setup-python@v2
         with:
-          python-version: 3.9
+          python-version: 3.11
 
       - name: Install Python dependencies
         run: |
@@ -36,39 +44,13 @@ jobs:
         working-directory: app
 
       - name: Build with pyinstaller
-        run: pyinstaller -w --onefile --name=elevblender-${{ matrix.os }} app.py
+        run: pyinstaller -w --onefile --name=elevblender app.py
         working-directory: app
 
-      - name: Deploy artifacts
-        uses: actions/upload-artifact@v2
+      - name: Upload binaries to release
+        uses: svenstaro/upload-release-action@v2
         with:
-          name: app-${{ matrix.os }}
-          path: app/dist/elevblender-${{ matrix.os }}*
-          if-no-files-found: error
-
-  Release:
-    name: Make release
-    if: startsWith(github.ref, 'refs/tags/')
-    permissions:
-      actions: read
-      contents: write
-    
-    runs-on: ubuntu-latest
-    steps:
-    - name: Wait for Build
-      uses: yogeshlonkar/wait-for-jobs@v0.1.4
-      with:
-        gh-token: ${{ secrets.GITHUB_TOKEN }}
-        ignore-skipped: 'false'
-        jobs: 'latest)'
-        suffix: 'true'
-    - name: Update release version
-      run: echo ${{ github.sha }} > release.txt
-    - name: Create release
-      uses: softprops/action-gh-release@v0.1.15
-      with:
-        files: |
-          release.txt
-          app/dist/elevblender-macos-latest*
-          app/dist/elevblender-windows-latest*
-          app/dist/elevblender-ubuntu-latest*
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          file: app/dist/${{ matrix.artifact_name }}
+          asset_name: ${{ matrix.asset_name }}
+          tag: ${{ github.ref }}
