@@ -52,6 +52,13 @@ jobs:
   Release:
     name: Make release
     if: startsWith(github.ref, 'refs/tags/')
+    permissions:
+      actions: read
+    uses: yogeshlonkar/wait-for-jobs@v0
+    with:
+      gh-token: ${{ secrets.GITHUB_TOKEN }}
+      ignore-skipped: 'false'
+      jobs: 'Build'
     runs-on: ubuntu-latest
     steps:
     - name: Create release
