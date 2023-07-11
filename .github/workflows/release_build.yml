@@ -47,7 +47,7 @@ jobs:
         working-directory: app
 
       - name: Build with pyinstaller
-        run: pyinstaller -w --onefile --name=${{ matrix.artifact_name }} app.py
+        run: pyinstaller -w -y --onefile --name=${{ matrix.artifact_name }} app.py
         working-directory: app
 
       - name: Upload binaries to release
