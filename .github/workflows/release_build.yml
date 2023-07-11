@@ -62,7 +62,7 @@ jobs:
         jobs: 'latest)'
         suffix: 'true'
     - name: Update release version
-        run: echo ${{ github.sha }} > release.txt
+      run: echo ${{ github.sha }} > release.txt
     - name: Create release
       uses: softprops/action-gh-release@v0.1.15
       with:
