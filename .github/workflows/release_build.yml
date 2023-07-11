@@ -35,9 +35,6 @@ jobs:
           python -m pip install --upgrade pip pyinstaller
         working-directory: app
 
-      - name: Update release version
-        run: echo ${{ github.sha }} > release.txt
-
       - name: Build with pyinstaller
         run: pyinstaller -w --onefile --name=elevblender-${{ matrix.os }} app.py
         working-directory: app
@@ -62,8 +59,10 @@ jobs:
       with:
         gh-token: ${{ secrets.GITHUB_TOKEN }}
         ignore-skipped: 'false'
-        jobs: 'Build release binaries'
+        jobs: 'latest)'
         suffix: 'true'
+    - name: Update release version
+        run: echo ${{ github.sha }} > release.txt
     - name: Create release
       uses: softprops/action-gh-release@v0.1.15
       with:
