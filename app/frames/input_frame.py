@@ -22,7 +22,7 @@ class InputFrame(ttk.Frame):
 
         # Defining variables
         self.classroom = ClassRoom()
-        self.classroom_var = tk.StringVar(value=self.classroom.students)
+        self.classroom_var = tk.StringVar(value=self.classroom.pretty_list)
         self.groups = {}
 
         # Create list frame
