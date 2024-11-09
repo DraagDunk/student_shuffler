@@ -5,7 +5,7 @@ from tkinter import END, VERTICAL, ttk, filedialog
 
 from random import random, shuffle
 
-from frames.utils import classroom_to_str, divide_groups, \
+from frames.utils import divide_groups, \
     remove_indices, student_gender_symbol, \
     male_strings, female_strings
 
@@ -22,7 +22,7 @@ class InputFrame(ttk.Frame):
 
         # Defining variables
         self.classroom = ClassRoom()
-        self.classroom_var = tk.StringVar(value=self.classroom)
+        self.classroom_var = tk.StringVar(value=self.classroom.students)
         self.groups = {}
 
         # Create list frame
@@ -83,6 +83,7 @@ class InputFrame(ttk.Frame):
                 cr_json = json.load(file)
 
             self.classroom = ClassRoom.from_json_object(cr_json)
+            self.classroom_var.set(self.classroom.pretty_list)
         else:
             print("No filename provided, cancelling.")
             return
@@ -90,7 +91,7 @@ class InputFrame(ttk.Frame):
     def save_students(self, *args, **kwargs):
         """Save the list of students to a json file."""
 
-        path = filedialog.asksaveasfile(
+        file = filedialog.asksaveasfile(
             mode="w",
             initialdir=".",
             title="Gem liste af elever",
@@ -99,8 +100,8 @@ class InputFrame(ttk.Frame):
         )
         if file:
             cr_json = self.classroom.to_json_object()
-            with open(path) as file:
-                json.dump(cr_json, file)
+            json.dump(cr_json, file)
+            file.close()
         else:
             print("No filename provided, cancelling.")
             return
@@ -119,7 +120,7 @@ class InputFrame(ttk.Frame):
         else:
             new_student_name = self.add_new_student_frame.new_student_var.get()
             new_student_gender = self.add_new_student_frame.student_gender_entry.gender_var.get()
-            new_student_tup = (new_student_name, new_student_gender)
+            new_student = Student(new_student_name, new_student_gender)
 
         # Throw away student if no name was provided.
         if not new_student_name or not new_student_gender:
@@ -128,11 +129,10 @@ class InputFrame(ttk.Frame):
                 f" ({new_student_gender or 'none'}), skipping.")
             return
 
-        # Add the student to the various containers.
-        self.classroom.append(new_student_tup)
-        student_name_list = [
-            f"{tup[0]} {student_gender_symbol(tup[1])}" for tup in self.classroom]
-        self.classroom_var.set(value=student_name_list)
+        # Add the student to the classroom.
+        self.classroom.add_student(new_student)
+        self.classroom_var.set(self.classroom.pretty_list)
+        print(self.classroom)
 
         # Set the selection to the new student, and scroll list to the bottom.
         self.classroombox.selection_clear(0, END)
@@ -299,25 +299,25 @@ class StudentGenderSelection(ttk.Frame):
     def __init__(self, container, *args, **kwargs):
         super().__init__(container, *args, **kwargs)
 
-        self.gender_var = tk.StringVar(value="andet")
+        self.gender_var = tk.StringVar(value="o")
 
         male_option = ttk.Radiobutton(
             self,
             text="Mand",
             variable=self.gender_var,
-            value="mand"
+            value="m"
         )
         female_option = ttk.Radiobutton(
             self,
             text="Kvinde",
             variable=self.gender_var,
-            value="kvinde"
+            value="f"
         )
         other_option = ttk.Radiobutton(
             self,
             text="Andet",
             variable=self.gender_var,
-            value="andet"
+            value="o"
         )
         male_option.grid(row=0, column=0)
         female_option.grid(row=0, column=1)

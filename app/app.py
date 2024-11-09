@@ -69,7 +69,7 @@ def handle_tab(event):
 
     if focus_is_add_new:
         curr_val = root.in_frame.add_new_student_frame.student_gender_entry.gender_var.get()
-        choices = ["mand", "kvinde", "andet"]
+        choices = ["m", "f", "o"]
         choice_index = [i for i in range(
             len(choices)) if choices[i] == curr_val][0]
         new_index = (choice_index + 1) % len(choices)

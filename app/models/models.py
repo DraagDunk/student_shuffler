@@ -12,10 +12,14 @@ def gender(gender_str):
 
 class Student:
 
-    def __init__(self, name, gender):
+    def __init__(self, name, gen):
         self.id = int(random.random() * 10**10)
         self.name = str(name)
-        self.gender = str(gender)
+        if gen in ("m", "f", "o"):
+            self.gender = str(gen)
+        else:
+            raise ValueError(
+                f"Cannot assign '{gen}' as gender. Options are: 'm', 'f', 'o'.")
 
     def __str__(self):
         return f"{self.name} ({gender(self.gender)})"
@@ -49,6 +53,10 @@ class ClassRoom:
 
     def __repr__(self):
         return f"<ClassRoom({self.students})>"
+
+    @property
+    def pretty_list(self):
+        return [str(student) for student in self.students]
 
     def add_student(self, student: Student):
         self.students.add(student)
