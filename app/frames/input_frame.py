@@ -1,11 +1,15 @@
+import json
+
 import tkinter as tk
 from tkinter import END, VERTICAL, ttk, filedialog
 
 from random import random, shuffle
 
-from frames.utils import student_list_to_str, divide_groups, \
+from frames.utils import classroom_to_str, divide_groups, \
     remove_indices, student_gender_symbol, \
     male_strings, female_strings
+
+from models.models import ClassRoom, Student
 
 
 class InputFrame(ttk.Frame):
@@ -17,8 +21,8 @@ class InputFrame(ttk.Frame):
         self.configure(padding=10)
 
         # Defining variables
-        self.student_list = []
-        self.student_list_var = tk.StringVar(value=self.student_list)
+        self.classroom = ClassRoom()
+        self.classroom_var = tk.StringVar(value=self.classroom)
         self.groups = {}
 
         # Create list frame
@@ -35,12 +39,12 @@ class InputFrame(ttk.Frame):
         self.create_groups_frame = CreateGroupsFrame(
             self, borderwidth=2, relief="groove")
 
-        self.student_listbox = tk.Listbox(
-            self.list_frame, height=20, width=40, listvariable=self.student_list_var, selectmode="extended")
-        student_list_scrollbar = tk.Scrollbar(self.list_frame, orient=VERTICAL)
-        self.student_listbox.configure(
-            yscrollcommand=student_list_scrollbar.set)
-        student_list_scrollbar.config(command=self.student_listbox.yview)
+        self.classroombox = tk.Listbox(
+            self.list_frame, height=20, width=40, listvariable=self.classroom_var, selectmode="extended")
+        classroom_scrollbar = tk.Scrollbar(self.list_frame, orient=VERTICAL)
+        self.classroombox.configure(
+            yscrollcommand=classroom_scrollbar.set)
+        classroom_scrollbar.config(command=self.classroombox.yview)
         load_button = ttk.Button(
             self.list_frame, text="Indlæs liste", command=self.load_students)
         save_button = ttk.Button(
@@ -53,8 +57,8 @@ class InputFrame(ttk.Frame):
 
         # Assign widgets to grid
         self.list_frame.grid(row=0, column=0, rowspan=2)
-        self.student_listbox.grid(row=0, column=0, columnspan=2)
-        student_list_scrollbar.grid(row=0, column=2, sticky="NS")
+        self.classroombox.grid(row=0, column=0, columnspan=2)
+        classroom_scrollbar.grid(row=0, column=2, sticky="NS")
         load_button.grid(row=1, column=0, sticky="EW")
         save_button.grid(row=1, column=1, sticky="EW")
 
@@ -65,50 +69,40 @@ class InputFrame(ttk.Frame):
         rem_student_button.grid(row=2, column=0, sticky="NSEW")
 
     def load_students(self, *args):
-        """Load a text file into the student list."""
+        """Load a json file into the student list."""
 
-        self.student_list = []
-
-        # Import data and but it into a list.
+        # Import data and put it into a list.
         path = filedialog.askopenfilename(
             initialdir=".",
             title="Vælg liste over elever",
-            filetypes=(("Text files", "*.txt*"),)
+            filetypes=(("JSON files", "*.json*"),)
         )
 
         if path:
-            file = open(path, "r")
-            student_list = file.read().split("\n")
+            with open(path, "r") as file:
+                cr_json = json.load(file)
 
-            # Clean the list up a bit.
-            for i, student in sorted(enumerate(student_list), reverse=True):
-                if student == "":
-                    _ = student_list.pop(i)
-
-            # Register the students to the list.
-            for student in student_list:
-                student.replace(",", ";")
-                self.add_student(student=student)
+            self.classroom = ClassRoom.from_json_object(cr_json)
         else:
-            # print("No filename provided, cancelling.")
+            print("No filename provided, cancelling.")
             return
 
     def save_students(self, *args, **kwargs):
-        """Save the list of students to a text file."""
+        """Save the list of students to a json file."""
 
-        file = filedialog.asksaveasfile(
+        path = filedialog.asksaveasfile(
             mode="w",
             initialdir=".",
             title="Gem liste af elever",
-            defaultextension=".txt",
-            filetypes=(("Text files", "*.txt"),)
+            defaultextension=".json",
+            filetypes=(("JSON files", "*.json"),)
         )
         if file:
-            save_string = student_list_to_str(self.student_list)
-            file.write(save_string)
-            file.close()
+            cr_json = self.classroom.to_json_object()
+            with open(path) as file:
+                json.dump(cr_json, file)
         else:
-            # print("No filename provided, cancelling.")
+            print("No filename provided, cancelling.")
             return
 
     def add_student(self, *args, **kwargs):
@@ -135,15 +129,15 @@ class InputFrame(ttk.Frame):
             return
 
         # Add the student to the various containers.
-        self.student_list.append(new_student_tup)
+        self.classroom.append(new_student_tup)
         student_name_list = [
-            f"{tup[0]} {student_gender_symbol(tup[1])}" for tup in self.student_list]
-        self.student_list_var.set(value=student_name_list)
+            f"{tup[0]} {student_gender_symbol(tup[1])}" for tup in self.classroom]
+        self.classroom_var.set(value=student_name_list)
 
         # Set the selection to the new student, and scroll list to the bottom.
-        self.student_listbox.selection_clear(0, END)
-        self.student_listbox.selection_set(END, END)
-        self.student_listbox.yview_moveto(1)
+        self.classroombox.selection_clear(0, END)
+        self.classroombox.selection_set(END, END)
+        self.classroombox.yview_moveto(1)
 
         # Clear the variable and focus on the field again.
         self.add_new_student_frame.new_student_var.set("")
@@ -151,25 +145,25 @@ class InputFrame(ttk.Frame):
 
     def remove_student(self, *args, **kwargs):
         """Remove the chosen student from the student list."""
-        chosen_student_ind = list(self.student_listbox.curselection())
-        self.student_list = remove_indices(
-            self.student_list, chosen_student_ind)
-        self.student_list_var.set([student[0]
-                                  for student in self.student_list])
-        self.student_listbox.selection_clear(0, END)
+        chosen_student_ind = list(self.classroombox.curselection())
+        self.classroom = remove_indices(
+            self.classroom, chosen_student_ind)
+        self.classroom_var.set([student[0]
+                                for student in self.classroom])
+        self.classroombox.selection_clear(0, END)
 
     def create_groups(self, *args):
         """Create groups and save them in the groups variable."""
         # Clear existing groups
         self.groups = {}
 
-        temp_student_list = [student for student in self.student_list]
-        shuffle(temp_student_list)
+        temp_classroom = [student for student in self.classroom]
+        shuffle(temp_classroom)
         if bool(self.create_groups_frame.divide_gender_var.get()):
             male_list = []
             female_list = []
             other_list = []
-            for student in temp_student_list:
+            for student in temp_classroom:
                 name, gender = student
                 if gender in male_strings:
                     male_list.append(name)
@@ -204,7 +198,7 @@ class InputFrame(ttk.Frame):
 
         else:
             full_list = [student[0]
-                         for student in temp_student_list]
+                         for student in temp_classroom]
             self.groups = divide_groups(
                 full_list,
                 int(self.create_groups_frame.num_groups_var.get()),
