@@ -20,6 +20,12 @@ You only need the executable for your operating system.
 
 Currently, your virus detection software will probably react pretty severely to this software. This will be fixed as soon as I figure out how.
 
+## New release
+
+Simply push a new tag, and a new version will be released with the tag name.
+
+New binaries will be compiled and added to the release.
+
 ## Basic functionality
 
 * Shuffle a list of students into groups.
