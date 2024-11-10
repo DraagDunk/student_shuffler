@@ -1,3 +1,4 @@
+from models.models import Group
 
 male_strings = ("mand", "m", "male", "dreng")
 female_strings = ("kvinde", "k", "female", "f", "pige")
@@ -10,33 +11,29 @@ def student_list_to_str(student_list: list[tuple]) -> str:
     return student_string
 
 
-def group_dir_to_str(group_dir: dict) -> str:
+def groups_to_str(groups: list[Group]) -> str:
     group_string = ""
-    for key in group_dir.keys():
-        group_string += f"Gruppe {key}\n"
-        for student in group_dir[key]:
-            group_string += f"- {student}\n"
-        group_string += "\n"
+    for group in groups:
+        group_string += group.to_txt()
     return group_string
 
 
 def divide_groups(lst: list, num_g: int, num_s: int) -> dict:
-    grp_dict = {}
     if num_g:
         num_groups = num_g
     elif num_s:
         num_groups = len(lst)//num_s
     else:
-        # print("No number of groups or number of students per group provided, defaulting to 1 group.")
+        print("No number of groups or number of students per group provided, defaulting to 1 group.")
         num_groups = 1
 
-    for i, name in enumerate(lst):
+    groups = [Group(f"Gruppe {i+1}") for i in range(num_groups)]
+
+    for i, student in enumerate(lst):
         grp_num = i % num_groups
-        if str(grp_num+1) in grp_dict.keys():
-            grp_dict[str(grp_num+1)].append(name)
-        else:
-            grp_dict[str(grp_num+1)] = [name]
-    return grp_dict
+        groups[grp_num].add_student(student)
+
+    return groups
 
 
 def increment(curr_row, curr_col, max=5, mode="col"):
@@ -60,14 +57,3 @@ def increment(curr_row, curr_col, max=5, mode="col"):
         return inc2, inc1
     else:
         return inc1, inc2
-
-
-def remove_indices(lst: list, ind: list) -> list:
-    rev_ind = sorted(ind, reverse=True)
-    for i in rev_ind:
-        lst.pop(i)
-    return lst
-
-
-def student_gender_symbol(gender):
-    return "♂" if gender in male_strings else "♀" if gender in female_strings else "⚥"

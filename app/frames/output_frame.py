@@ -1,7 +1,9 @@
 import tkinter as tk
 from tkinter import ttk, filedialog
 
-from frames.utils import increment, group_dir_to_str
+from frames.utils import increment, groups_to_str
+
+from models.models import Group
 
 
 class OutputFrame(ttk.Frame):
@@ -34,9 +36,9 @@ class OutputFrame(ttk.Frame):
 
         curr_row = 0
         curr_col = 0
-        for group_num in groups.keys():
+        for group in groups:
             group_frame = GroupFrame(
-                self.groups_frame, grp_num=group_num, group=groups[group_num])
+                self.groups_frame, group=group)
             group_frame.grid(row=curr_row, column=curr_col, sticky="NW")
             curr_row, curr_col = increment(
                 curr_row, curr_col, max=5, mode="col")
@@ -52,11 +54,11 @@ class OutputFrame(ttk.Frame):
             filetypes=(("Text files", "*.txt"),)
         )
         if file:
-            save_string = group_dir_to_str(self.groups)
+            save_string = groups_to_str(self.groups)
             file.write(save_string)
             file.close()
         else:
-            # print("No filename provided, cancelling.")
+            print("No filename provided, cancelling.")
             return
 
 
@@ -66,17 +68,17 @@ class GroupsFrame(ttk.Frame):
 
 class GroupFrame(ttk.Frame):
 
-    def __init__(self, container, grp_num: str = "", group: list = [], *args, **kwargs):
+    def __init__(self, container, group: Group, *args, **kwargs):
         super().__init__(container, *args, **kwargs)
 
         self.configure(padding=10)
 
         group_num_label = ttk.Label(
-            self, text=f"Gruppe {grp_num}")
+            self, text=group.name)
         group_num_label.grid(
             row=0, column=0, sticky="W")
         curr_row = 0
-        for student in group:
+        for student in group.students:
             name_label = ttk.Label(self, text=f" - {student}")
             curr_row += 1
             name_label.grid(row=curr_row, column=0,

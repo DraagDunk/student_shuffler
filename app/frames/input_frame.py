@@ -5,9 +5,7 @@ from tkinter import END, VERTICAL, ttk, filedialog
 
 from random import random, shuffle
 
-from frames.utils import divide_groups, \
-    remove_indices, student_gender_symbol, \
-    male_strings, female_strings
+from frames.utils import divide_groups
 
 from models.models import ClassRoom, Student
 
@@ -154,29 +152,28 @@ class InputFrame(ttk.Frame):
     def create_groups(self, *args):
         """Create groups and save them in the groups variable."""
         # Clear existing groups
-        self.groups = {}
+        self.groups = []
 
-        temp_classroom = [student for student in self.classroom]
+        temp_classroom = [student for student in self.classroom.students]
         shuffle(temp_classroom)
         if bool(self.create_groups_frame.divide_gender_var.get()):
             male_list = []
             female_list = []
             other_list = []
             for student in temp_classroom:
-                name, gender = student
-                if gender in male_strings:
-                    male_list.append(name)
-                elif gender in female_strings:
-                    female_list.append(name)
+                if student.is_male:
+                    male_list.append(student)
+                elif student.is_female:
+                    female_list.append(student)
                 else:
-                    other_list.append(name)
+                    other_list.append(student)
 
-            for other_name in other_list:
+            for other_st in other_list:
                 roll = random()
                 if roll >= 0.5:
-                    male_list.append(other_name)
+                    male_list.append(other_st)
                 else:
-                    female_list.append(other_name)
+                    female_list.append(other_st)
 
             m_ratio = len(male_list)/(len(male_list)+len(female_list))
             f_ratio = len(female_list)/(len(male_list)+len(female_list))
@@ -190,16 +187,15 @@ class InputFrame(ttk.Frame):
                 round(int(self.create_groups_frame.num_groups_var.get()) * f_ratio),
                 int(self.create_groups_frame.num_students_var.get())
             )
-            for key in male_groups.keys():
-                self.groups[f"{key}m"] = male_groups[key]
-            for key in female_groups.keys():
-                self.groups[f"{key}f"] = female_groups[key]
+            for group in male_groups:
+                group.name += "m"
+            for group in female_groups:
+                group.name += "f"
 
         else:
-            full_list = [student[0]
-                         for student in temp_classroom]
+            print(temp_classroom)
             self.groups = divide_groups(
-                full_list,
+                temp_classroom,
                 int(self.create_groups_frame.num_groups_var.get()),
                 int(self.create_groups_frame.num_students_var.get())
             )

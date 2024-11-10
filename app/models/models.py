@@ -27,6 +27,18 @@ class Student:
     def __repr__(self):
         return f"<Student('{self.name}', '{self.gender}')>"
 
+    @property
+    def is_male(self):
+        return self.gender == "m"
+
+    @property
+    def is_female(self):
+        return self.gender == "f"
+
+    @property
+    def is_other_gender(self):
+        return self.gender == "o"
+
     def to_json_object(self):
         obj = {
             'name': self.name,
@@ -99,15 +111,26 @@ class ClassRoom:
 
 class Group:
 
-    def __init__(self, name: str, students: list = []):
+    def __init__(self, name: str, students: list | None = None):
         self.name = name
-        self.students = students
+        self.students = students if students else []
 
     def __str__(self):
         return f"Group '{self.name}' with students: {', '.join([str(student) for student in self.students])}"
 
     def __repr__(self):
-        return f"<Group({self.name}, {self.students})>"
+        return f"<'Group({self.name}', {self.students})>"
+
+    def add_student(self, student: Student):
+        self.students.append(student)
+
+    def to_txt(self):
+        group_string = ""
+        group_string += f"{self.name}\n"
+        for student in self.students:
+            group_string += f"- {student.name}\n"
+        group_string += "\n"
+        return group_string
 
     def to_json_object(self):
         obj = {
