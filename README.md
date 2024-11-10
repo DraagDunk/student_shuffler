@@ -1,6 +1,6 @@
 # Student shuffler
 
-This app is meant to help teachers shuffle the students in their classes into groups of a predetermined size or number. The app can take a .txt file of a certain format, and import each student from that list into its internal logic. Lists of students and lists of the groups created by the software can both be saved to a .txt file format.
+This app is meant to help teachers shuffle the students in their classes into groups of a predetermined size or number. The app can take a .json file of a certain format, and import each student from that file into its internal logic. Lists of students created by the software can be saved to a .json file format, and lists of groups created by the software can be saved to a human-readable .txt-file format.
 
 ## General information
 
