@@ -153,3 +153,4 @@ cython_debug/
 
 # Don't include test data
 *.json
+*.txt
