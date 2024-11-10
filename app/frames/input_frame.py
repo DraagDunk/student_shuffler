@@ -193,7 +193,6 @@ class InputFrame(ttk.Frame):
                 group.name += "f"
 
         else:
-            print(temp_classroom)
             self.groups = divide_groups(
                 temp_classroom,
                 int(self.create_groups_frame.num_groups_var.get()),
