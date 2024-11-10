@@ -26,9 +26,9 @@ Currently, your virus detection software will probably react pretty severely to 
 
 * Save list of groups to a .txt file.
 
-* Import a .txt file containing a list of students.
+* Import a .json file containing a list of students.
 
-* Save list of students to a .txt file.
+* Save list of students to a .json file.
 
 * Divide groups by gender.
 
@@ -39,6 +39,8 @@ Currently, your virus detection software will probably react pretty severely to 
 * Set number of groups or number of students in each group.
  
  ## TODO
+
+ * Edit students in the list in the app.
 
  * Implement limits to the size of groups based on number of students.
 

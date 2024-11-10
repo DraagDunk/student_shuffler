@@ -1,5 +1,16 @@
 # Changelog
 
+## Version 0.3.20
+
+### Improvements
+
+* Rewritten all logic to use classes, to more easily keep track of data.
+
+### Other notes
+
+* Finally made CI-pipeline in GitHub work. This is the reason for the sudden
+  jump in version numbers.
+
 ## Version 0.2.1
 _04-07-2022_
 
