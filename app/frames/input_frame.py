@@ -22,7 +22,7 @@ class InputFrame(ttk.Frame):
 
         # Defining variables
         self.classroom = ClassRoom()
-        self.classroom_var = tk.StringVar(value=self.classroom.pretty_list)
+        self.classroom_var = tk.StringVar(value=self.classroom.students)
         self.groups = {}
 
         # Create list frame
@@ -83,7 +83,7 @@ class InputFrame(ttk.Frame):
                 cr_json = json.load(file)
 
             self.classroom = ClassRoom.from_json_object(cr_json)
-            self.classroom_var.set(self.classroom.pretty_list)
+            self.classroom_var.set(self.classroom.students)
         else:
             print("No filename provided, cancelling.")
             return
@@ -131,7 +131,7 @@ class InputFrame(ttk.Frame):
 
         # Add the student to the classroom.
         self.classroom.add_student(new_student)
-        self.classroom_var.set(self.classroom.pretty_list)
+        self.classroom_var.set(self.classroom.students)
         print(self.classroom)
 
         # Set the selection to the new student, and scroll list to the bottom.
@@ -145,11 +145,10 @@ class InputFrame(ttk.Frame):
 
     def remove_student(self, *args, **kwargs):
         """Remove the chosen student from the student list."""
-        chosen_student_ind = list(self.classroombox.curselection())
-        self.classroom = remove_indices(
-            self.classroom, chosen_student_ind)
-        self.classroom_var.set([student[0]
-                                for student in self.classroom])
+        chosen_student = self.classroom.students[self.classroombox.curselection(
+        )[0]]
+        self.classroom.remove_student(chosen_student)
+        self.classroom_var.set(self.classroom.students)
         self.classroombox.selection_clear(0, END)
 
     def create_groups(self, *args):

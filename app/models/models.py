@@ -46,7 +46,7 @@ class Student:
 class ClassRoom:
 
     def __init__(self, students=[]):
-        self.students = set(students)
+        self.students = students
 
     def __str__(self):
         return f"Classroom with students: {', '.join([str(student) for student in self.students])}"
@@ -54,19 +54,15 @@ class ClassRoom:
     def __repr__(self):
         return f"<ClassRoom({self.students})>"
 
-    @property
-    def pretty_list(self):
-        return [str(student) for student in self.students]
-
     def add_student(self, student: Student):
-        self.students.add(student)
+        self.students.append(student)
 
     def remove_student(self, student: Student | int | str):
         if isinstance(student, Student):
-            self.students.remove(student)
+            self.students = [st for st in self.students if st != student]
         else:
             student_obj = self.get_student(student)
-            self.students.remove(student_obj)
+            self.students = [st for st in self.students if st != student_obj]
 
     def get_student(self, student: int | str):
         if isinstance(student, int):
