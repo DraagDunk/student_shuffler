@@ -130,7 +130,6 @@ class InputFrame(ttk.Frame):
         # Add the student to the classroom.
         self.classroom.add_student(new_student)
         self.classroom_var.set(self.classroom.students)
-        print(self.classroom)
 
         # Set the selection to the new student, and scroll list to the bottom.
         self.classroombox.selection_clear(0, END)
@@ -152,11 +151,11 @@ class InputFrame(ttk.Frame):
     def create_groups(self, *args):
         """Create groups and save them in the groups variable."""
         # Clear existing groups
-        self.groups = []
 
         temp_classroom = [student for student in self.classroom.students]
         shuffle(temp_classroom)
         if bool(self.create_groups_frame.divide_gender_var.get()):
+            print("HERE")
             male_list = []
             female_list = []
             other_list = []
@@ -187,10 +186,15 @@ class InputFrame(ttk.Frame):
                 round(int(self.create_groups_frame.num_groups_var.get()) * f_ratio),
                 int(self.create_groups_frame.num_students_var.get())
             )
+            print("male_groups:", male_groups)
+            print("female_groups:", female_groups)
+
             for group in male_groups:
                 group.name += "m"
             for group in female_groups:
                 group.name += "f"
+
+            self.groups = male_groups + female_groups
 
         else:
             self.groups = divide_groups(

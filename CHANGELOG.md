@@ -1,5 +1,11 @@
 # Changelog
 
+## Version 0.3.21
+
+### Bugfixes
+
+* Fix grouping by gender.
+
 ## Version 0.3.20
 _10-11-2024_
 
