@@ -34,17 +34,25 @@ class InputFrame(ttk.Frame):
         # Create widgets
         self.add_new_student_frame = AddNewStudentFrame(
             self, borderwidth=2, relief="groove")
+        self.edit_student_frame = EditStudentFrame(
+            self, borderwidth=2, relief="groove")
         self.create_groups_frame = CreateGroupsFrame(
             self, borderwidth=2, relief="groove")
 
+        # Box with a list of students in classroom ...
         self.classroombox = tk.Listbox(
             self.list_frame, height=20, width=40, listvariable=self.classroom_var, selectmode="extended")
+        # ... with a vertical scrollbar ...
         classroom_scrollbar = tk.Scrollbar(self.list_frame, orient=VERTICAL)
         self.classroombox.configure(
             yscrollcommand=classroom_scrollbar.set)
         classroom_scrollbar.config(command=self.classroombox.yview)
+        # ... where you edit students by double clicking them ...
+        self.classroombox.bind("<Double-Button-1>", self.edit_student)
+        # ... and a load button ...
         load_button = ttk.Button(
             self.list_frame, text="Indlæs liste", command=self.load_students)
+        # ... and a save button.
         save_button = ttk.Button(
             self.list_frame, text="Gem liste", command=self.save_students)
 
@@ -140,6 +148,11 @@ class InputFrame(ttk.Frame):
         self.add_new_student_frame.new_student_var.set("")
         self.add_new_student_frame.student_name_entry.focus()
 
+    def edit_student(self, *args, **kwargs):
+        student = self.classroom.students[self.classroombox.curselection()[0]]
+        self.go_to_edit_frame()
+        self.edit_student_frame.load_student(student)
+
     def remove_student(self, *args, **kwargs):
         """Remove the chosen student from the student list."""
         chosen_student = self.classroom.students[self.classroombox.curselection(
@@ -203,6 +216,16 @@ class InputFrame(ttk.Frame):
                 int(self.create_groups_frame.num_students_var.get())
             )
 
+    def go_to_edit_frame(self):
+        """Switches the add-frame to the edit frame."""
+        self.edit_student_frame.grid(row=0, column=1, sticky="NSEW")
+        self.add_new_student_frame.grid_forget()
+
+    def go_to_add_frame(self):
+        """Switches the edit-frame to the add-frame."""
+        self.add_new_student_frame.grid(row=0, column=1, sticky="NSEW")
+        self.edit_student_frame.grid_forget()
+
 
 class AddNewStudentFrame(ttk.Frame):
 
@@ -229,6 +252,35 @@ class AddNewStudentFrame(ttk.Frame):
         student_name_label.grid(row=0, column=0, padx=(0, 5))
         self.student_name_entry.grid(row=0, column=1)
         self.student_gender_entry.grid(row=1, column=0, columnspan=2)
+
+
+class EditStudentFrame(ttk.Frame):
+
+    def __init__(self, container, *args, **kwargs):
+        super().__init__(container, *args, **kwargs)
+
+        # Configure frame
+        self.configure(padding=10)
+        self.grid_rowconfigure(0, weight=1)
+        self.grid_rowconfigure(1, weight=1)
+        self.grid_rowconfigure(2, weight=1)
+
+        # Defining variables
+        self.student_var = tk.StringVar()
+
+        # Creating widgets
+        student_name_label = ttk.Label(
+            self, text="Navn på ny elev:")
+        self.student_name_entry = ttk.Entry(
+            self, textvariable=self.student_var)
+        self.student_gender_entry = StudentGenderSelection(self)
+
+        # Assigning widgets to grid
+        student_name_label.grid(row=0, column=0, padx=(0, 5))
+        self.student_name_entry.grid(row=0, column=1)
+        self.student_gender_entry.grid(row=1, column=0, columnspan=2)
+
+    def load_student(student: str):
 
 
 class CreateGroupsFrame(ttk.Frame):
